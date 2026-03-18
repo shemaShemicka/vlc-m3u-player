@@ -1,0 +1,23 @@
+name: Update IPTV List
+on:
+  schedule:
+    - cron: '0 0 * * *' # Секоја вечер во полноќ
+  workflow_dispatch: # Копче за рачно пуштање
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Python & Deps
+        run: |
+          python -m pip install aiohttp
+      - name: Run Script
+        run: python automator.py
+      - name: Push Result
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add playlist.m3u
+          git commit -m "Update list" || exit 0
+          git push
